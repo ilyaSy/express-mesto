@@ -1,0 +1,32 @@
+{
+  "name": "express-mesto",
+  "version": "1.0.0",
+  "description": "node-e\b\b\b\b\b\bMEN stack",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ilyaSy/express-mesto.git"
+  },
+  "author": "Ilys\ba\b\b\b\bilyaSy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ilyaSy/express-mesto/issues"
+  },
+  "homepage": "https://github.com/ilyaSy/express-mesto#readme",
+  "devDependencies": {
+    "eslint": "^7.26.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.23.2",
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.12.10"
+  }
+}
