@@ -1,9 +1,23 @@
 const User = require('../models/user');
 
+const ERROR_BAD_DATA = 400;
+const ERROR_NO_DATA = 404;
+const ERROR_OTHER = 400;
+
+const handleError = (res, err) => {
+  if (err.name === 'ValidationError') {
+    return res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные' });
+  }
+  if (err.name === 'CastError') {
+    return res.status(ERROR_NO_DATA).send({ message: 'Пользователь не найден' });
+  }
+  return res.status(ERROR_OTHER).send({ message: `На сервере произошла ошибка: ${err}` });
+};
+
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка ${err}` }));
+    .catch((err) => handleError(res, err));
 };
 
 module.exports.getUser = (req, res) => {
@@ -11,7 +25,7 @@ module.exports.getUser = (req, res) => {
 
   User.findById(userId)
     .then((user) => res.send(user))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка ${err}` }));
+    .catch((err) => handleError(res, err));
 };
 
 module.exports.createUser = (req, res) => {
@@ -19,7 +33,7 @@ module.exports.createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then((user) => res.send(user))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка ${err}` }));
+    .catch((err) => handleError(res, err));
 };
 
 module.exports.updateProfile = (req, res) => {
@@ -36,7 +50,7 @@ module.exports.updateProfile = (req, res) => {
     },
   )
     .then((user) => res.send(user))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка ${err}` }));
+    .catch((err) => handleError(res, err));
 };
 
 module.exports.updateAvatar = (req, res) => {
@@ -53,5 +67,5 @@ module.exports.updateAvatar = (req, res) => {
     },
   )
     .then((user) => res.send(user))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка ${err}` }));
+    .catch((err) => handleError(res, err));
 };

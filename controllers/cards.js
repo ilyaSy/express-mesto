@@ -1,9 +1,23 @@
 const Card = require('../models/card');
 
+const ERROR_BAD_DATA = 400;
+const ERROR_NO_DATA = 404;
+const ERROR_OTHER = 400;
+
+const handleError = (res, err) => {
+  if (err.name === 'ValidationError') {
+    return res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные' });
+  }
+  if (err.name === 'CastError') {
+    return res.status(ERROR_NO_DATA).send({ message: 'Карточка не найдена' });
+  }
+  return res.status(ERROR_OTHER).send({ message: `На сервере произошла ошибка: ${err}` });
+};
+
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка ${err}` }));
+    .catch((err) => handleError(res, err));
 };
 
 module.exports.deleteCard = (req, res) => {
@@ -11,7 +25,7 @@ module.exports.deleteCard = (req, res) => {
 
   Card.findByIdAndRemove(cardId)
     .then((card) => res.send(card))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка ${err}` }));
+    .catch((err) => handleError(res, err));
 };
 
 module.exports.createCard = (req, res) => {
@@ -19,7 +33,7 @@ module.exports.createCard = (req, res) => {
 
   Card.create({ name, link })
     .then((card) => res.send(card))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка ${err}` }));
+    .catch((err) => handleError(res, err));
 };
 
 module.exports.toggleLikeCard = (req, res) => {
@@ -32,7 +46,7 @@ module.exports.toggleLikeCard = (req, res) => {
       { new: true },
     )
       .then((card) => res.send(card))
-      .catch((err) => res.status(500).send({ message: `Произошла ошибка ${err}` }));
+      .catch((err) => handleError(res, err));
   } else if (req.method === 'DELETE') {
     Card.findByIdAndUpdate(
       cardId,
@@ -40,6 +54,6 @@ module.exports.toggleLikeCard = (req, res) => {
       { new: true },
     )
       .then((card) => res.send(card))
-      .catch((err) => res.status(500).send({ message: `Произошла ошибка ${err}` }));
+      .catch((err) => handleError(res, err));
   }
 };
