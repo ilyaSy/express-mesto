@@ -39,11 +39,11 @@ module.exports.createUser = (req, res) => {
 
 module.exports.updateProfile = (req, res) => {
   const userId = req.user._id;
-  const { name, about, avatar } = req.body;
+  const { name, about } = req.body;
 
   User.findByIdAndUpdate(
     userId,
-    { name, about, avatar },
+    { name, about },
     {
       new: true,
       runValidators: true,
