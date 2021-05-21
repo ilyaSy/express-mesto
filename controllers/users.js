@@ -5,11 +5,11 @@ const ERROR_NO_DATA = 404;
 const ERROR_OTHER = 400;
 
 const handleError = (res, err) => {
-  if (err.name === 'ValidationError') {
-    return res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные' });
+  if (err.message === 'NotFound') {
+    return res.status(ERROR_NO_DATA).send({ message: 'Пользователь не найден' });
   }
   if (err.name === 'CastError') {
-    return res.status(ERROR_NO_DATA).send({ message: 'Пользователь не найден' });
+    return res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные' });
   }
   return res.status(ERROR_OTHER).send({ message: `На сервере произошла ошибка: ${err}` });
 };
@@ -21,9 +21,10 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUser = (req, res) => {
-  const userId = req.user._id;
+  const { userId } = req.params;
 
   User.findById(userId)
+    .orFail(() => { throw Error('NotFound'); })
     .then((user) => res.send(user))
     .catch((err) => handleError(res, err));
 };
@@ -46,9 +47,9 @@ module.exports.updateProfile = (req, res) => {
     {
       new: true,
       runValidators: true,
-      upsert: true,
     },
   )
+    .orFail(new Error('NotFound'))
     .then((user) => res.send(user))
     .catch((err) => handleError(res, err));
 };
@@ -63,9 +64,9 @@ module.exports.updateAvatar = (req, res) => {
     {
       new: true,
       runValidators: true,
-      upsert: true,
     },
   )
+    .orFail(new Error('NotFound'))
     .then((user) => res.send(user))
     .catch((err) => handleError(res, err));
 };

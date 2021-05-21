@@ -5,11 +5,11 @@ const ERROR_NO_DATA = 404;
 const ERROR_OTHER = 400;
 
 const handleError = (res, err) => {
-  if (err.name === 'ValidationError') {
-    return res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные' });
+  if (err.message === 'NotFound') {
+    return res.status(ERROR_NO_DATA).send({ message: 'Карточка не найдена' });
   }
   if (err.name === 'CastError') {
-    return res.status(ERROR_NO_DATA).send({ message: 'Карточка не найдена' });
+    return res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные' });
   }
   return res.status(ERROR_OTHER).send({ message: `На сервере произошла ошибка: ${err}` });
 };
@@ -24,6 +24,7 @@ module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
 
   Card.findByIdAndRemove(cardId)
+    .orFail(new Error('NotFound'))
     .then((card) => res.send(card))
     .catch((err) => handleError(res, err));
 };
@@ -41,10 +42,12 @@ module.exports.toggleLikeCard = (req, res) => {
 
   if (req.method === 'PUT') {
     Card.findByIdAndUpdate(cardId, { $addToSet: { likes: req.user._id } }, { new: true })
+      .orFail(new Error('NotFound'))
       .then((card) => res.send(card))
       .catch((err) => handleError(res, err));
   } else if (req.method === 'DELETE') {
     Card.findByIdAndUpdate(cardId, { $pull: { likes: req.user._id } }, { new: true })
+      .orFail(new Error('NotFound'))
       .then((card) => res.send(card))
       .catch((err) => handleError(res, err));
   }

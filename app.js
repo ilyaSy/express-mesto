@@ -13,15 +13,9 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 const { PORT = 3000 } = process.env;
 
 const app = express();
-app.listen(PORT, (req, res) => {
-  if (false) {
-    console.log(req, res);
-  }
-  console.log(`Server works at port ${PORT}`);
-});
+app.listen(PORT);
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 //  authentication middleware
 app.use((req, res, next) => {
@@ -34,8 +28,6 @@ app.use((req, res, next) => {
 
 app.use('/', usersRoutes);
 app.use('/', cardsRoutes);
-
-app.get('/', (req, res) => {
-  console.log(`${new Date()} ${req.method}`);
-  res.send('<h1>Hello World!</h1>');
+app.use('/', (req, res) => {
+  res.send(404, '{"message": "ресурс не найден"}');
 });
