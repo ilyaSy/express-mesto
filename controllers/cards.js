@@ -40,19 +40,11 @@ module.exports.toggleLikeCard = (req, res) => {
   const { cardId } = req.params;
 
   if (req.method === 'PUT') {
-    Card.findByIdAndUpdate(
-      cardId,
-      { $addToSet: { likes: req.user._id } },
-      { new: true },
-    )
+    Card.findByIdAndUpdate(cardId, { $addToSet: { likes: req.user._id } }, { new: true })
       .then((card) => res.send(card))
       .catch((err) => handleError(res, err));
   } else if (req.method === 'DELETE') {
-    Card.findByIdAndUpdate(
-      cardId,
-      { $pull: { likes: req.user._id } },
-      { new: true },
-    )
+    Card.findByIdAndUpdate(cardId, { $pull: { likes: req.user._id } }, { new: true })
       .then((card) => res.send(card))
       .catch((err) => handleError(res, err));
   }
