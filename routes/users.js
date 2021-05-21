@@ -1,25 +1,11 @@
 const router = require('express').Router();
-
-const getUsers = (req, res) => {
-
-};
-
-const getUser = (req, res) => {
-  const {userId} = req.params;
-};
-
-const createUser = (req, res) => {
-  const {title, name, avatar} = req.query;
-};
-
-const updateProfile = (req, res) => {
-  //req.user._id
-};
-
-const updateAvatar = (req, res) => {
-  //req.user._id
-  const {title, name, avatar} = req.query;
-};
+const {
+  getUsers,
+  createUser,
+  getUser,
+  updateProfile,
+  updateAvatar,
+} = require('../controllers/users');
 
 router.get('/users', getUsers);
 router.get('/users/:userId', getUser);

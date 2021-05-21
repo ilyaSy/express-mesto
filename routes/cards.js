@@ -1,26 +1,15 @@
 const router = require('express').Router();
-
-const getCards = (req, res) => {
-
-};
-
-const createCard = (req, res) => {
-  const {name, link} = req.query;
-};
-
-const deleteCard = (req, res) => {
-  const {cardId} = req.params;
-};
-
-const toggleLike = (req, res) => {
-  const {cardId} = req.params;
-  const like = req.method === 'PUT' ? true : false;
-}
+const {
+  getCards,
+  createCard,
+  deleteCard,
+  toggleLikeCard,
+} = require('../controllers/cards');
 
 router.get('/cards', getCards);
-router.post('/cards', getCards);
+router.post('/cards', createCard);
 router.delete('/cards/:cardId', deleteCard);
-router.put('/cards/:cardId/likes', toggleLike);
-router.delete('/cards/:cardId/likes', toggleLike);
+router.put('/cards/:cardId/likes', toggleLikeCard);
+router.delete('/cards/:cardId/likes', toggleLikeCard);
 
 module.exports = router;
