@@ -29,5 +29,5 @@ app.use((req, res, next) => {
 app.use('/', usersRoutes);
 app.use('/', cardsRoutes);
 app.use('/', (req, res) => {
-  res.send(404, '{"message": "ресурс не найден"}');
+  res.send(404, { message: 'ресурс не найден' });
 });
