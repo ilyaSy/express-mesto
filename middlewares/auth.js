@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const CustomError = require('../utils/CustomError');
 
-module.exports.auth = (req, res, next) => {
+module.exports = (req, res, next) => {
   // const { authorization } = req.headers;
   // if (!authorization || !authorization.startsWith('Bearer ')) {
   // throw new CustomError(401, 'Необходима авторизация');

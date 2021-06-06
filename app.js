@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
 const { createUser, login } = require('./controllers/users');
-const auth = require('./middlewares/auth');
+// const auth = require('./middlewares/auth');
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -24,7 +24,7 @@ app.use(cookieParser());
 app.post('/signin', login);
 app.post('/signup', createUser);
 
-app.use(auth);
+// app.use(auth);
 
 app.use('/', usersRoutes);
 app.use('/', cardsRoutes);
