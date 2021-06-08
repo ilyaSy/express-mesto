@@ -45,18 +45,19 @@ module.exports.createUser = (req, res, next) => {
     about,
     avatar,
     email,
-    hash,
-  }))
-    // .orFail(new CustomError(400, 'Переданы некорректные данные'))
-    .then((user) => res.send(user))
+    password: hash,
+  })
     .catch((err) => {
+      if (err.errors && err.errors.avatar) {
+        throw new CustomError(400, err.errors.avatar.message);
+      }
       if (err.name === 'MongoError' && err.code === 11000) {
         throw new CustomError(409, 'Пользователь с таким email уже зарегистрирован');
       } else if (err.name === 'ValidationError') {
         throw new CustomError(500, 'На сервере произошла ошибка');
       }
-      throw new CustomError(500, 'На сервере произошла ошибка');
-    })
+    }))
+    .then((user) => res.send(user))
     .catch(next);
 };
 
@@ -90,8 +91,13 @@ module.exports.getMe = (req, res, next) => {
   const userId = req.user._id;
 
   User.findById(userId)
-    .orFail(() => { throw new CustomError(404, 'Пользователь не найден'); })
+    .orFail(new Error('NoData'))
     .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.message === 'NoData') {
+        throw new CustomError(404, 'Пользователь не найден');
+      }
+    })
     .catch(next);
 };
 
