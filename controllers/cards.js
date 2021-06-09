@@ -23,7 +23,7 @@ module.exports.deleteCard = (req, res, next) => {
         throw new CustomError(404, 'Карточка не найдена');
       }
       if (err.message === 'BadRules') {
-        throw new CustomError(401, 'У вас нет прав удалять карточки других пользователей');
+        throw new CustomError(403, 'У вас нет прав удалять карточки других пользователей');
       }
       throw new CustomError(500, 'На сервере произошла ошибка');
     })
@@ -46,6 +46,9 @@ module.exports.createCard = (req, res, next) => {
   Card.create({ name, link })
     .then((card) => res.send(card))
     .catch((err) => {
+      if (err.errors && err.errors.link) {
+        throw new CustomError(400, err.errors.link.message);
+      }
       if (err.message === 'NoData') {
         throw new CustomError(404, 'Карточка не найдена');
       } else if (err.name === 'CastError') {

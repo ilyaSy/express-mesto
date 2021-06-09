@@ -80,7 +80,7 @@ module.exports.login = (req, res, next) => {
         throw new CustomError(401, 'Неправильные почта или пароль');
       }
 
-      const token = jwt.sign({ _id: userId }, 'some-secret-key');
+      const token = jwt.sign({ _id: userId }, 'some-secret-key', { expiresIn: '7d' });
 
       res.cookie('jwt', token, { maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true }).end();
     })
