@@ -17,6 +17,16 @@ module.exports.deleteCard = (req, res, next) => {
       if (card.owner !== userId) {
         throw Error('BadRules');
       }
+
+      Card.findByIdAndRemove(cardId)
+        .then((cardRemoved) => res.send(cardRemoved))
+        .catch((err) => {
+          if (err.name === 'CastError') {
+            throw new CustomError(400, 'Переданы некорректные данные');
+          }
+          throw new CustomError(500, 'На сервере произошла ошибка');
+        })
+        .catch(next);
     })
     .catch((err) => {
       if (err.message === 'NoData') {
@@ -24,16 +34,6 @@ module.exports.deleteCard = (req, res, next) => {
       }
       if (err.message === 'BadRules') {
         throw new CustomError(403, 'У вас нет прав удалять карточки других пользователей');
-      }
-      throw new CustomError(500, 'На сервере произошла ошибка');
-    })
-    .catch(next);
-
-  Card.findByIdAndRemove(cardId)
-    .then((card) => res.send(card))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        throw new CustomError(400, 'Переданы некорректные данные');
       }
       throw new CustomError(500, 'На сервере произошла ошибка');
     })
