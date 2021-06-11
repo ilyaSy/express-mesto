@@ -23,8 +23,6 @@ app.listen(PORT);
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-// app.post('/signin', login);
-// app.post('/signup', createUser);
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
@@ -47,7 +45,7 @@ app.use(auth);
 
 app.use('/', usersRoutes);
 app.use('/', cardsRoutes);
-app.use('/', (req, res) => {
+app.use('/', () => {
   throw new CustomError(404, 'Ресурс не найден');
 });
 
@@ -59,4 +57,5 @@ app.use((err, req, res, next) => {
   res.status(statusCode).send({
     message: statusCode === 500 ? 'На сервере произошла ошибка' : message,
   });
+  next();
 });
