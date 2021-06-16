@@ -8,6 +8,7 @@ const cardsRoutes = require('./routes/cards');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const CustomError = require('./utils/CustomError');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -22,6 +23,7 @@ app.listen(PORT);
 
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(requestLogger);
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -48,6 +50,8 @@ app.use('/', cardsRoutes);
 app.use('/', () => {
   throw new CustomError(404, 'Ресурс не найден');
 });
+
+app.use(errorLogger);
 
 app.use(errors());
 
